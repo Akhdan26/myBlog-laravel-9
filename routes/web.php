@@ -24,4 +24,6 @@ Route::group(['prefix' => 'dashboard','middleware' => ['web','auth']], function(
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
     //Categories
     Route::resource('/categories', \App\Http\Controllers\CategoryController::class);
+    //Posts
+    Route::resource('/posts', \App\Http\Controllers\PostsController::class);
 });

@@ -14,7 +14,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Posts::all();
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -24,7 +25,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**

@@ -19,6 +19,18 @@ Breadcrumbs::for('dashboard_home', function (BreadcrumbTrail $trail) {
     $trail->push('Home', '#');
 });
 
+// Dashboard > Posts
+Breadcrumbs::for('posts', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Posts', route('posts.index'));
+});
+
+// Dashboard > Posts > Add
+Breadcrumbs::for('add_posts', function (BreadcrumbTrail $trail) {
+    $trail->parent('posts');
+    $trail->push('Add', route('posts.create'));
+});
+
 // Dashboard > Categories
 Breadcrumbs::for('categories', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');

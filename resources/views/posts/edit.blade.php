@@ -1,11 +1,11 @@
 @extends('layouts.dashboard')
 
 @section('title')
-    Add Categories
+    Edit Categories
 @endsection
 
 @section('breadcrumbs')
-{{Breadcrumbs::render('add_category')}}
+{{Breadcrumbs::render('edit_nama_category', $category)}}
 @endsection
 
 @section('content')
@@ -13,14 +13,15 @@
     <div class="col-md-12">
        <div class="card">
           <div class="card-body">
-             <form action="{{ route('categories.store') }}" method="POST">
-               @csrf
+             <form action="{{ route('categories.update', ['category' => $category]) }}" method="POST">
+               @method('PUT')
+                @csrf
                 <!-- name -->
                 <div class="form-group">
                    <label for="input_category_name" class="font-weight-bold">
                       Name
                    </label>
-                   <input id="input_category_name" value="{{ old('name') }}" name="name" type="text" class="form-control @error('name') is-invalid @enderror" />
+                   <input id="input_category_name" value="{{ old('name', $category->name) }}" name="name" type="text" class="form-control @error('name') is-invalid @enderror" />
                     <!-- todo: show message validation (name) -->
                      @error('name')
                      <span class="invalid-feedback" role="alert">
@@ -33,7 +34,7 @@
                    <label for="input_category_slug" class="font-weight-bold">
                       Slug
                    </label>
-                   <input id="input_category_slug" value="{{ old('slug') }}" name="slug" type="text" class="form-control @error('slug') is-invalid @enderror" readonly/>
+                   <input id="input_category_slug" value="{{ old('slug', $category->slug) }}" name="slug" type="text" class="form-control @error('slug') is-invalid @enderror" readonly/>
                    <!-- todo: show message validation (slug) -->
                    @error('slug')
                    <span class="invalid-feedback" role="alert">
@@ -43,7 +44,7 @@
                 </div>
                 <div class="float-right">
                 	<a class="btn btn-warning px-4" href="{{ route('categories.index') }}">Back</a>
-                	<button type="submit" class="btn btn-primary px-4">Save</button>
+                	<button type="submit" class="btn btn-primary px-4">Edit</button>
                 </div>                
              </form>
           </div>
@@ -63,17 +64,21 @@
 
 @push('javascript-internal')
     <script>
-        $(document).ready(function() {
-         $("#input_category_name").change(function (event) {
-            $("#input_category_slug").val(
-               event.target.value
-                  .trim()
+        $(function(){
+            // generateSlug
+            function generateSlug(value){
+               return value.trim()
                   .toLowerCase()
-                  .replace(/[^a-z\d-]/gi, "-")
-                  .replace(/-+/g, "-")
-                  .replace(/^-|-$/g, "")
-            );
-         });
+                  .replace(/[^a-z\d-]/gi, '-')
+                  .replace(/-+/g, '-').replace(/^-|-$/g, "");
+            }
+            
+            // event: input name   
+            $('#input_category_name').change(function() {
+                  let name = $(this).val();
+                  console.log(name);
+                  $('#input_category_slug').val(generateSlug(name));
+            });
         });
     </script>
 @endpush 

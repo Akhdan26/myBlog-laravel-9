@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('title', 200);
             $table->string('slug')->unique();
             $table->string('short_description', 100);
-            $table->string('content');
+            $table->text('content');
             $table->string('image');
             $table->string('thumbnail');
             $table->timestamps();
