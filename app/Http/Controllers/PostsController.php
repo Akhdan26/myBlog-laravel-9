@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Posts;
+use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Intervention\Image\Facades\Image;
 class PostsController extends Controller
 {
     /**
@@ -25,7 +26,8 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::get();
+        return view('posts.create', compact('categories'));
     }
 
     /**
@@ -36,19 +38,52 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'category_id' => 'required',
+            'title' => 'required|string',
+            'slug' => 'required|string|unique:posts,slug',
+            'short_description' => 'required|string',
+            'content' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        // image upload
 
+        $image = $request->file('image');
+        $input['imagename'] = time() . '.' . $image->extension();
+
+        $destinationPath = public_path('/thumbnail');
+        $img = Image::make($image->path());
+        $img->resize(100, 100, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . '/small_' .  $input['imagename']);
+
+        $destinationPath = public_path('/image');
+        $image->move($destinationPath, $input['imagename']);
+
+        try {
+            Posts::create(
+                [
+                    'image' => $input['imagename'],
+                    'thumbnail' => $input['imagename'],
+                    'category_id' => $request->category_id,
+                    'title' => $request->title,
+                    'slug' => $request->slug,
+                    'short_description' => $request->short_description,
+                    'content' => $request->content,
+
+                ]
+            );
+            return redirect()->route('posts.index')->with('success', 'Data Berhasil DiTambah');
+        } catch (\Throwable $th) {
+            return redirect()->back()->withInput($request->all());
+        }
+    }
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Posts  $posts
      * @return \Illuminate\Http\Response
      */
-    public function show(Posts $posts)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.

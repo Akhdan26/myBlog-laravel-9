@@ -26,4 +26,7 @@ Route::group(['prefix' => 'dashboard','middleware' => ['web','auth']], function(
     Route::resource('/categories', \App\Http\Controllers\CategoryController::class);
     //Posts
     Route::resource('/posts', \App\Http\Controllers\PostsController::class);
+    Route::group(['prefix' => 'laravel-filemanager'], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
 });

@@ -129,6 +129,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        
         try {
             $category->delete();
             Alert::success('Delete Category', 'Success');
